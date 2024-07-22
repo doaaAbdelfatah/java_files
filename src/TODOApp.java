@@ -26,10 +26,13 @@ public class TODOApp extends JFrame {
 
         JMenuItem menuItemNew = new JMenuItem("New");
         JMenuItem menuItemSave = new JMenuItem("Save");
+        JMenuItem menuItemSaveAs = new JMenuItem("Save As");
         JMenuItem menuItemLoad = new JMenuItem("Load");
         JMenuItem menuItemExit = new JMenuItem("Exit");
         fileMenu.add(menuItemNew);
+        fileMenu.addSeparator();
         fileMenu.add(menuItemSave);
+        fileMenu.add(menuItemSaveAs);
         fileMenu.addSeparator();
         fileMenu.add(menuItemLoad);
         fileMenu.addSeparator();
@@ -81,23 +84,7 @@ public class TODOApp extends JFrame {
 
         menuItemSave.addActionListener(e->{
             if (file == null ){
-                JFileChooser fileChooser = new JFileChooser();
-                int choice =  fileChooser.showSaveDialog(null) ;
-                if (choice == 0) {
-                    try {
-                        file = fileChooser.getSelectedFile();
-                        this.setTitle(file.getAbsolutePath());
-                        FileWriter writer = new FileWriter(file);
-                        PrintWriter out = new PrintWriter(writer);
-                        for (int i = 0; i <dlm.size() ; i++) {
-                            out.println(  dlm.get(i));
-                        }
-                        out.close();
-                        writer.close();
-                    }catch (IOException ioException){
-                        System.out.println(ioException.getMessage());
-                    }
-                }
+               save();
             }else{
                 try {
                     FileWriter writer = new FileWriter(file);
@@ -111,7 +98,9 @@ public class TODOApp extends JFrame {
                     System.out.println(ioException.getMessage());
                 }
             }
-
+        });
+        menuItemSaveAs.addActionListener(e->{
+            save();
         });
 
         menuItemLoad.addActionListener(e->{
@@ -137,8 +126,38 @@ public class TODOApp extends JFrame {
             }
         });
 
+        menuItemMarkCompleted.addActionListener(e->{
+//            int i = list.getSelectedIndex();
+//            dlm.set(i  , "<html><s><i><span color='gray'>" + dlm.get(i)+ "</span></i><s></html>");
+
+           int indexes [] =  list.getSelectedIndices();
+            for (int i = 0; i < indexes.length ; i++) {
+                dlm.set(indexes[i]  , "<html><s><i><span color='gray'>" + dlm.get(indexes[i])+ "</span></i><s></html>");
+            }
+        });
+
     }
     public static void main(String[] args) {
         new TODOApp().setVisible(true);
+    }
+
+    void save(){
+        JFileChooser fileChooser = new JFileChooser();
+        int choice =  fileChooser.showSaveDialog(null) ;
+        if (choice == 0) {
+            try {
+                file = fileChooser.getSelectedFile();
+                this.setTitle(file.getAbsolutePath());
+                FileWriter writer = new FileWriter(file);
+                PrintWriter out = new PrintWriter(writer);
+                for (int i = 0; i <dlm.size() ; i++) {
+                    out.println(  dlm.get(i));
+                }
+                out.close();
+                writer.close();
+            }catch (IOException ioException){
+                System.out.println(ioException.getMessage());
+            }
+        }
     }
 }
