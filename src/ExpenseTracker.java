@@ -193,10 +193,23 @@ public class ExpenseTracker extends JFrame {
     private  void showCategories(){
         // columns : 0 , 1 , 2 Category
         HashSet <String> categoriesSet = new HashSet<>();
+        HashSet <String> categoriesSetWithAmount = new HashSet<>();
         for (int i = 0; i < tableModel.getRowCount(); i++) {
            categoriesSet.add((String) tableModel.getValueAt(i , 2));
         }
-        listModel.addAll(categoriesSet);
+        for (String c : categoriesSet){
+            int sumCatAmount =0;
+            for (int i = 0; i < tableModel.getRowCount(); i++) {
+                String cat = (String) tableModel.getValueAt(i , 2);
+                if (cat.equals(c)){
+                    int amount =  Integer.parseInt ((String)tableModel.getValueAt(i , 1));
+                    sumCatAmount+= amount;
+                }
+            }
+            categoriesSetWithAmount.add(c + " - " + sumCatAmount);
+        }
+        listModel.clear();
+        listModel.addAll(categoriesSetWithAmount);
     }
     public static void main(String[] args) {
         ExpenseTracker app = new ExpenseTracker();
